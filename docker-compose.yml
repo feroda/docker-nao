@@ -1,7 +1,6 @@
 version: '3.3'
 services:
   choregraphe:
-    build: .
     image: fero/choregraphe:2.1.4
     volumes:
       - .:/home/naouser/
@@ -9,7 +8,6 @@ services:
     environment:
       - DISPLAY
   choregraphe-i386:
-    build: .
     image: fero/choregraphe-i386:2.1.4
     volumes:
       - .:/home/naouser/
