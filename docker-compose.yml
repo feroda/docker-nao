@@ -5,6 +5,8 @@ services:
     volumes:
       - .:/home/naouser/
       - /tmp/.X11-unix:/tmp/.X11-unix
+    ports:
+      - "9559:9000"
     environment:
       - DISPLAY
   choregraphe-i386:
@@ -14,3 +16,5 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - DISPLAY
+    ports:
+      - "9559:9000"
