@@ -1,0 +1,7 @@
+<qibuild version="1">
+  <defaults>
+    <env />
+    <cmake generator="Unix Makefiles" />
+    </defaults>
+  <ide name="QtCreator" path="/usr/bin/qtcreator" />
+  </qibuild>
