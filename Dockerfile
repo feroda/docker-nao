@@ -2,7 +2,7 @@ FROM ubuntu:12.04
 
 COPY SDK/*linux64* /opt/
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y wget \
     python-pip libpython2.7 libboost-all-dev sudo unzip \
     software-properties-common python-software-properties \
     libfreetype6 libsm6 libxrender1 fontconfig libxext6 libxt6 libxaw7 libglu1-mesa libxrandr2 && \
@@ -38,6 +38,9 @@ WORKDIR /opt/naoqi-sdk
 # http://doc.aldebaran.com/2-1/dev/cpp/install_guide.html#d-sdk-installation
 # they say that there should be an SDK EMPTY folder... I don't believe it
 RUN qibuild init 
+# The add-config step is documented at
+# http://doc.aldebaran.com/qibuild/beginner/qibuild/aldebaran.html#for-the-desktop
+# for newer versions of qibuild
 WORKDIR /opt/naoqi-sdk/doc/dev/cpp/examples
 RUN qitoolchain create mytoolchain /opt/naoqi-sdk/toolchain.xml && \
     qibuild add-config mytoolchain -t mytoolchain --default 
@@ -46,6 +49,19 @@ RUN qitoolchain create mytoolchain /opt/naoqi-sdk/toolchain.xml && \
 # TODO: do it as unprivileged user
 WORKDIR /opt/naoqi-sdk/doc/dev/cpp/examples/core/sayhelloworld
 RUN qibuild configure && qibuild make
+
+# Step 4: install Ubuntu OpenCV libraries and remove from NAOqi-SDK
+# as doc http://doc.aldebaran.com/2-5/dev/cpp/examples/vision/opencv.html?highlight=opencv#removing-opencv-from-the-naoqi-sdk
+# Even if we have NAOqi<2.5
+WORKDIR /opt/naoqi-sdk/
+RUN rm -rf lib/libopencv_* include/opencv2 include/opencv
+WORKDIR /opt/
+RUN wget https://sourceforge.net/projects/opencvlibrary/files/opencv-unix/2.4.9/opencv-2.4.9.zip/download -O OpenCV-2.4.9.zip
+RUN unzip OpenCV-2.4.9.zip && mkdir -p opencv-2.4.9/build
+WORKDIR /opt/opencv-2.4.9/build
+RUN cmake .. && make && make install && \
+    ls /opt/opencv-2.4.9/build/lib/libopencv_* | while read a; do ln -s $a /opt/naoqi-sdk/lib/; done
+
 WORKDIR /opt/naoqi-sdk/doc/dev/cpp/examples/vision/alvisualcompass
 RUN qibuild configure && qibuild make
 
@@ -53,7 +69,7 @@ RUN qibuild configure && qibuild make
 USER naouser
 ENV HOME /home/naouser
 ENV PATH $PATH:/opt/choregraphe/bin/
-ENV LD_LIBRARY_PATH SDK/naoqi-sdk/lib/
+ENV LD_LIBRARY_PATH /opt/naoqi-sdk/lib/
 ENV PYTHONPATH /opt/pynaoqi/
 
 # environment QT_X11_NO_MITSHM needed to avoid Bad Access Permission

@@ -4,4 +4,7 @@
     <cmake generator="Unix Makefiles" />
     </defaults>
   <ide name="QtCreator" path="/usr/bin/qtcreator" />
+  <worktree path="/opt/naoqi-sdk-2.1.4.13-linux64">
+    <defaults />
+    </worktree>
   </qibuild>
