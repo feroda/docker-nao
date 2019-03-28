@@ -6,7 +6,7 @@ This version executes Choregraphe and NaoQI version 2.1.4.13 for compatibility w
 
 ## Running
 
-At first, you need to downalod and install the `docker-compose` software.
+At first, you need to download and install the `docker-compose` software.
 
 After that, just clone the repo and issue:
 
@@ -27,12 +27,14 @@ If your id is different from 1000 you must change Dockerfile and follow the inst
 
 You don't need this unless you know what you are doing.
 
-To rebuild the image you need choregraphe 2.1.4.13 for linux 64bit binaries
+To rebuild the image you need to download choregraphe 2.1.4.13 for linux 64bit binaries and NAOqi SDK C++ and SDK Python
 [provided by SoftBank Robotics](https://community.ald.softbankrobotics.com/en/resources/software/language/en-gb/robot/nao-2/field_soft_version%253Afield_soft_version_code_version/2%252E1%252E4),
-and issue the command:
+and save them under the `SDK/` directory
+
+Then issue the command:
 
     `docker-compose build coregraphe`
 
 
-NOTE: to download Choregraphe you need to sign in on the SoftBank Robotics website.
+NOTE: to download Choregraphe and SDK you need to sign in on the SoftBank Robotics website.
 
