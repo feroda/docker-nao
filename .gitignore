@@ -1,2 +1,4 @@
 .config
 .local
+.*.swp
+*.pyc

@@ -24,7 +24,7 @@ def hello():
 @app.route('/qicli/<subcommand>/<method>/')
 def qicli(subcommand, method="--list"):
     qi_url = request.query.qi_url
-    args = request.query.args.split(",")
+    args = request.query.args.split(",") if request.query.args else []
     qicli = QiCli(qi_url)
     if hasattr(qicli, subcommand):
         rv = getattr(qicli, subcommand)(method, *args)
