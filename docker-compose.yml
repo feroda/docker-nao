@@ -1,20 +1,29 @@
-version: '3.3'
+version: '3.7'
 services:
+  qi-log:
+    build: .
+    user: naouser
+    command: bash -c 'sleep 60 && qicli --qi-url choregraphe log-view'
+    volumes:
+      - ./:/home/naouser/
+  # naoqi:
+  #   build: .
+  #   user: naouser
+  #   command: naoqi-bin --qi-listen-url tcp://0.0.0.0:9559 --qi-standalone
+  #   volumes:
+  #     - ./:/home/naouser/
+  # # environment:
+  # # - QI_SDK_PREFIX=/opt/pynaoqi
   choregraphe:
-    image: fero/choregraphe:2.1.4
+    build: .
+    user: naouser
+    devices:
+      - /dev/dri/card1:/dev/dri/card1
     volumes:
-      - .:/home/naouser/
-      - /tmp/.X11-unix:/tmp/.X11-unix
-    ports:
-      - "9559:9000"
-    environment:
-      - DISPLAY
-  choregraphe-i386:
-    image: fero/choregraphe-i386:2.1.4
-    volumes:
-      - .:/home/naouser/
+      - ./:/home/naouser/
       - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - DISPLAY
-    ports:
-      - "9559:9000"
+        # - LD_LIBRARY_PATH=/opt/pynaoqi/lib/
+    # command: choregraphe-bin --no-naoqi --no-discovery --ip=172.30.6.2'
+    command: choregraphe-bin --no-discovery

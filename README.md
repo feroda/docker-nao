@@ -38,3 +38,10 @@ Then issue the command:
 
 NOTE: to download Choregraphe and SDK you need to sign in on the SoftBank Robotics website.
 
+Choregraphe License is: 654e-4564-153c-6518-2f44-7562-206e-4c60-5f47-5f45
+You can copy from: https://corporate-internal-prod.aldebaran.com/en/support/nao-6/downloads-softwares
+
+
+# NOTE:
+
+docker run -ti -p9000:9000 -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /home/feroda/src/me/play-nao/:/play-nao/ fero/choregraphe:2.1.4
