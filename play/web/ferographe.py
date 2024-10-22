@@ -2,7 +2,7 @@
 
 import os
 import json
-from bottle import Bottle, run, request, response
+from bottle import Bottle, run, request, response, template, static_file
 
 from libqicli import QiCli
 
@@ -15,10 +15,16 @@ def my_json_response(x):
     return json.dumps(x)
 
 
-@app.route('/hello')
-def hello():
-    return "Hello World!"
+@app.route('/')
+def index():
+    qi_url = request.query.qi_url
+    qicli = QiCli(qi_url)
+    postures = qicli.call("ALRobotPosture.getPostureList")
+    return template('templates/index', postures=postures) 
 
+@app.route('/static/<filename:path>')
+def serve_static(filename):
+    return static_file(filename, root='./static')
 
 @app.route('/qicli/<subcommand>/')
 @app.route('/qicli/<subcommand>/<method>/')
