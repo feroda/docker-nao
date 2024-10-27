@@ -20,17 +20,30 @@ def index():
     qi_url = request.query.qi_url
     qicli = QiCli(qi_url)
     postures = qicli.call("ALRobotPosture.getPostureList")
-    return template('templates/index', postures=postures) 
+    current_posture = qicli.call("ALRobotPosture.getPosture")
+    languages = qicli.call("ALTextToSpeech.getAvailableLanguages")
+    return template(
+            'templates/index', 
+            current_posture=current_posture,
+            postures=postures,
+            languages=languages) 
 
 @app.route('/static/<filename:path>')
 def serve_static(filename):
     return static_file(filename, root='./static')
 
-@app.route('/qicli/<subcommand>/')
-@app.route('/qicli/<subcommand>/<method>/')
+@app.get('/qicli/<subcommand>/')
+@app.get('/qicli/<subcommand>/<method>/')
+@app.post('/qicli/<subcommand>/')
+@app.post('/qicli/<subcommand>/<method>/')
 def qicli(subcommand, method="--list"):
-    qi_url = request.query.qi_url
-    args = request.query.args.split(",") if request.query.args else []
+    qi_url = None
+    args = []
+    if request.query:
+        qi_url = request.query.qi_url  # "192.168.77.102"
+    if request.json:
+        qi_url = request.json.get("qi_url", qi_url)
+        args = request.json.get("args", [])
     qicli = QiCli(qi_url)
     if hasattr(qicli, subcommand):
         rv = getattr(qicli, subcommand)(method, *args)
@@ -47,4 +60,5 @@ if __name__ == '__main__':
             "debug": True,
             "reloader": False
         }
+
     app.run(host='0.0.0.0', port=8080, **kwargs)

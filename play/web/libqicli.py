@@ -1,3 +1,4 @@
+import copy
 import json
 import subprocess
 
@@ -5,13 +6,17 @@ import subprocess
 class QiCli:
 
     def __init__(self, qi_url=None):
-        self.qicli_args = ["qicli"]
-        if qi_url:
-            self.qicli_args.append("--qi-url={qi_url}")
+        self.qi_url = qi_url
+        self.qicli_args = []
+        self.base_args = ["qicli"]
+        if self.qi_url:
+            self.base_args.append("--qi-url={}".format(self.qi_url))
 
     def run(self):
         print("Executing {}...".format(self.qicli_args))
-        output = subprocess.check_output(self.qicli_args)
+        str_args = map(str, self.qicli_args)
+        print("Executing {}...".format(str_args))
+        output = subprocess.check_output(str_args)
         print("Output {}".format(output))
         lines = output.split("\n")
         self.outs = []
@@ -34,11 +39,13 @@ class QiCli:
         ]
 
     def info(self, method="--list", *args):
+        self.qicli_args = copy.copy(self.base_args)
         self.qicli_args.append("info")
         self.qicli_args.append(method) # TODO: with Service Details?
         return self.get_title_value_list()
 
     def call(self, method, *args):
+        self.qicli_args = copy.copy(self.base_args)
         self.qicli_args.append("call")
         self.qicli_args.append(method)
         self.qicli_args += args or []
