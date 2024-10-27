@@ -66,8 +66,9 @@
         async function goToPosture(posture) {
             await doFetch('ALRobotPosture.goToPosture', [posture, 0.5]);
             const response = await doFetch('ALRobotPosture.getPosture');
-            const myPosture = await response.json();
-            document.getElementById("my_posture").innerHTML = myPosture;
+            window.location.reload(); //ULGY: brutto ma necessario per caricare le corrette gestures in questa implementazione lato python
+            // Per tempi maturi... const myPosture = await response.json();
+            // Per tempi maturi... document.getElementById("my_posture").innerHTML = myPosture;
             return false;
         }
     </script>
