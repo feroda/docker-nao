@@ -50,13 +50,15 @@
             return false;
         }
         async function animatedSay() {
-            let lang = document.getElementById("set-language").value;
-            let msg = "^start(animations/Sit/Emotions/Positive/Winner_1) ";
-            msg +=document.getElementById("text").value;
-            
+            const lang = document.getElementById("set-language").value;
             await doFetch('ALTextToSpeech.setLanguage', [lang]);
-            await doFetch('ALBackgroundMovement.setEnabled', [1]);
-            await doFetch('ALSpeakingMovement.setMode', ["random"]);
+
+            const gesture = document.getElementById("set-gesture").value;
+            const text =document.getElementById("text").value;
+            const msg = `^start(${gesture}) ${text}`;
+            
+            //await doFetch('ALBackgroundMovement.setEnabled', [1]);
+            await doFetch('ALSpeakingMovement.setMode', ["contextual"]);
             await doFetch('ALAnimatedSpeech.say', [msg]);
             return false;
         }
@@ -70,11 +72,11 @@
         }
     </script>
     <main class="container">
-        <section id="speak">
+        <section id="section_status">
           <h2>Ciao sono NAO, e ora sono in posizione <span id="my_posture">{{current_posture}}</span></h2>
         </section>
-        <section id="speak">
-          <h2>NAO, dimmi</h2>
+        <section id="section_speak">
+          <h2>Ti posso dire</h2>
           <div class="grid">
             <div>
               <label for="text">Una frase...</label>
@@ -89,13 +91,24 @@
               </select>
             </div>
             <button class="btn-form-grid" onclick="say();">PARLA</button>
+          </div>
+          <div class="grid">
+            <div>
+              <label for="set-gesture">con il gesto...</label>
+              <select id="set-gesture" name="set-gesture" required="required">
+                % animation_basename = "animations/"+current_posture+"/"
+                % for i, gesture in enumerate([x[len(animation_basename):] for x in behaviors if animation_basename in x]):
+                    <option value="{{animation_basename + gesture}}" {{'selected="selected"' if i == 0 else ''}}">{{gesture}}</option>
+                % end
+              </select>
+            </div>
             <button class="btn-form-grid" onclick="animatedSay();">PARLA ANIMATO</button>
           </div>
           
           
         </section>
-        <section id="postures">
-          <h2>NAO, vai in posizione</h2>
+        <section id="section_postures">
+          <h2>Posso mettermi in una di queste posizioni</h2>
               % for i,posture in enumerate(postures):
                % if i % 3 == 0:
                 <div class="grid">

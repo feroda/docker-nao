@@ -21,11 +21,13 @@ def index():
     qicli = QiCli(qi_url)
     postures = qicli.call("ALRobotPosture.getPostureList")
     current_posture = qicli.call("ALRobotPosture.getPosture")
+    behaviors = qicli.call("ALBehaviorManager.getInstalledBehaviors")
     languages = qicli.call("ALTextToSpeech.getAvailableLanguages")
     return template(
             'templates/index', 
-            current_posture=current_posture,
             postures=postures,
+            current_posture=current_posture,
+            behaviors=behaviors,
             languages=languages) 
 
 @app.route('/static/<filename:path>')
